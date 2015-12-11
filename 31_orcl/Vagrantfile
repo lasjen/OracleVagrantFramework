@@ -1,0 +1,78 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure("2") do |config|
+  # If several PWH virtal machines, separate by different APPENDIX
+  $V_HOSTNAME_APPENIX="31"
+  $V_BOX_LINK="oel67_ora12c.box" 
+  $V_ORA_VERSION="12"
+  $V_ORA_VERSION_SUFF="C"
+  $V_OS_VERSION="67"
+  $V_DB_NAME="ORCL"
+  $V_USER_NAME="LJ"
+
+  # ------------------------------------------------------------------------
+  # WARNING! DO NOT EDIT BELOW THIS LINE!
+  # ------------------------------------------------------------------------
+  $V_ORA_VER=$V_ORA_VERSION+""+$V_ORA_VERSION_SUFF
+  $V_PRIVATE_IP="10.0.2.1"+$V_HOSTNAME_APPENIX
+  $V_SSH_PORT="22"+$V_HOSTNAME_APPENIX
+  $V_TNS_PORT="15"+$V_HOSTNAME_APPENIX
+  $V_BOX_NAME="OEL"+$V_OS_VERSION+"-ORA"+$V_ORA_VER
+  $V_BOX_URL="file:/data/vagrant_boxes/"
+  $V_HOST_NAME=$V_BOX_NAME+"-"+$V_DB_NAME+"-"+$V_HOSTNAME_APPENIX
+  
+  config.vm.box=$V_BOX_NAME
+  config.vm.box_url=$V_BOX_URL
+  config.vm.hostname=$V_HOST_NAME
+
+  if Vagrant.has_plugin?("vagrant-proxyconf")
+    config.proxy.http     = "http://proxy.edb.com:8080/"
+    config.proxy.https    = "http://proxy.edb.com:8080/"
+    config.proxy.no_proxy = "localhost,127.0.0.1,.evry.com,.edb.com"
+  end
+
+  if Vagrant.has_plugin?("vagrant-vbplugin")
+    config.vbguest.auto_update = true
+  end
+
+  config.vm.synced_folder "./", "/vagrant", id: "vagrant-root",
+    owner: "vagrant",
+    group: "dba",
+    mount_options: ["dmode=775,fmode=664"]
+  
+  config.vm.synced_folder "/data/ora_sql", "/ora_sql"
+
+  config.vm.synced_folder "/data/apps/flyway-3.2.1", "/flyway",
+    owner: "vagrant",
+    group: "dba",
+    mount_options: ["dmode=775,fmode=775"]
+
+  # Forward Oracle port
+  config.vm.network :forwarded_port, guest: 1521, host: $V_TNS_PORT
+  
+  # forward SSH port
+  config.vm.network :forwarded_port, id: 'ssh', guest: 22, host: $V_SSH_PORT
+
+  config.vm.network "private_network", ip: $V_PRIVATE_IP
+
+  # Provider-specific configuration so you can fine-tune various backing
+  # providers for Vagrant. These expose provider-specific options.
+  config.vm.provider :virtualbox do |vb|
+    vb.gui  = true
+    vb.cpus = 2
+    vb.name = config.vm.hostname
+    # Use VBoxManage to customize the VM
+    vb.customize ["modifyvm", :id,
+                  # This box needs 1024MB memory for the database to start
+                  "--memory", "1024",
+                  # Enable DNS behind NAT
+                  "--natdnshostresolver1", "on"]
+  end
+
+  #############################
+  # Provision part, this set up the vagrant box with a LJ user 
+  #
+  config.vm.provision "shell", path: "files/provision.sh", args: $V_ORA_VERSION
+  
+end

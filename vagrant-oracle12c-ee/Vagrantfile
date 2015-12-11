@@ -1,0 +1,79 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure("2") do |config|
+  # All Vagrant configuration is done here. The most common configuration
+  # options are documented and commented below. For a complete reference,
+  # please see the online documentation at vagrantup.com.
+
+  #if Vagrant.has_plugin?("vagrant-proxyconf")
+  #  config.proxy.http     = "http://<your server>:8080/"
+  #  config.proxy.https    = "http://<your server>:8080/"
+  #  config.proxy.no_proxy = "localhost,127.0.0.1,<your.domanin>"
+  #end
+
+  config.vbguest.auto_update = true
+
+  config.vm.box = "boxcutter/ol67"
+  config.vm.box_version = "= 3.0.3"  
+  config.vm.hostname = "oracle"
+
+  if ENV['VAGRANT_ORACLE_PORT']
+    oraclePort = ENV['VAGRANT_ORACLE_PORT'].to_i
+  else
+    oraclePort = 1521
+  end
+
+  # Forward Oracle port
+  config.vm.network :forwarded_port, guest: 1521, host: oraclePort
+
+  # Provider-specific configuration so you can fine-tune various backing
+  # providers for Vagrant. These expose provider-specific options.
+  config.vm.provider :virtualbox do |vb|
+    vb.cpus = 2
+    # Use VBoxManage to customize the VM
+    vb.customize ["modifyvm", :id,
+                  "--name", "oracle",
+                  "--memory", "2048",
+		  "--cpus", "1",
+                  # Enable DNS behind NAT
+                  "--natdnshostresolver1", "on"]
+  end
+
+  #config.vm.provision :shell, :inline => "echo \"Europe/Berlin\" | sudo tee /etc/timezone && dpkg-reconfigure --frontend noninteractive tzdata"
+
+  config.vm.synced_folder "srv", "/srv/"
+  config.vm.synced_folder ".", "/vagrant"
+
+  #enable repos, update packages, install salt-minion:
+  config.vm.provision :shell, :inline => "yum install -y yum-utils && yum-config-manager --enable epel\* && yum -y update && rpm -Uvh http://ftp.linux.ncsu.edu/pub/epel/6Server/x86_64/epel-release-6-8.noarch.rpm"
+
+  #needed for virtualbox guest kernel stuff:
+  config.vm.provision :shell, :inline => "yum install -y kernel-uek-devel kernel-devel"
+  
+  config.vm.provision :salt do |salt|
+    #salt.colorize = true
+    #salt.log_level = "all"
+    salt.verbose = true
+    #salt.no_minion = true
+    #https://github.com/mitchellh/vagrant/issues/5973:
+    #salt.minion_config = "vagrant/minion"
+    # pillar data is in vagrant/pillar/top.sls|wxs.sls
+    #https://github.com/mitchellh/vagrant/issues/5973:
+    #salt.run_highstate = true
+  end
+
+  #https://github.com/mitchellh/vagrant/issues/5973
+  config.vm.provision :shell, :inline => "sudo cp /vagrant/minion /etc/salt/minion && sudo service salt-minion restart && salt-call state.highstate"
+
+  #then reload so we can...
+  config.vm.provision :reload
+
+  config.vm.provision :shell, :inline => "sudo salt-call state.sls oracle12c.patch"
+
+  #cleanup:
+  config.vm.provision :shell, :inline => "yum clean all"
+  config.vm.provision :shell, :inline => "salt-call saltutil.clear_cache"
+  config.vm.provision :shell, :inline => "dd if=/dev/zero of=/zero.fill bs=1M;sync;sleep 1;sync;rm -f /zero.fill"
+
+end

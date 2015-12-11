@@ -1,0 +1,6 @@
+{% set extractdir = salt['pillar.get']('ora_extractdir', '/var/install_files') %}
+
+{% set ora_app = '/u01/app/oracle' %}
+{% set ora_prod = ora_app ~ '/product/12.1.0' %}
+
+

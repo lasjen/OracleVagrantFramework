@@ -1,0 +1,11 @@
+ ORACLE_HOME=/u01/app/oracle/product/12.1.0/dbhome_1 ; export ORACLE_HOME ; echo 'ORACLE_HOME='$ORACLE_HOME
+ PATH=$ORACLE_HOME/bin:/usr/sbin:$PATH ; export PATH ; echo 'PATH='$PATH
+ ORACLE_SID=cdb12 ; export ORACLE_SID ; echo 'ORACLE_SID='$ORACLE_SID
+sqlplus -s / as sysdba <<EOF
+CREATE OR REPLACE TRIGGER open_pdbs 
+  AFTER STARTUP ON DATABASE 
+BEGIN 
+   EXECUTE IMMEDIATE 'ALTER PLUGGABLE DATABASE ALL OPEN'; 
+END open_pdbs; 
+/ 
+EOF
