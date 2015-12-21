@@ -17,19 +17,19 @@ unzip:
 #download and unzip changed to cmds to avoid attribute problems (executable):
 #/tmp/p17694377_121020_Linux-x86-64_1of8.zip:
 #  file.managed:
-#    - source: http://fsfiles.evry.com/vagrant_boxes/sw/oracle_source/p17694377_121020_Linux-x86-64_1of8.zip
+#    - source: http://path.to.software.download/p17694377_121020_Linux-x86-64_1of8.zip
 #    - source_hash: md5=017d624abe5165406d3d7c7d2d3a834c
 
 #yet again salt fails on file.managed... do a wget instead:
-wget -O /tmp/p17694377_121020_Linux-x86-64_1of8.zip http://fsfiles.evry.com/vagrant_boxes/sw/oracle_source/p17694377_121020_Linux-x86-64_1of8.zip:
+wget -O /tmp/p17694377_121020_Linux-x86-64_1of8.zip http://path.to.software.download/p17694377_121020_Linux-x86-64_1of8.zip:
   cmd.run
 
-wget -O /tmp/p17694377_121020_Linux-x86-64_2of8.zip http://fsfiles.evry.com/vagrant_boxes/sw/oracle_source/p17694377_121020_Linux-x86-64_2of8.zip:
+wget -O /tmp/p17694377_121020_Linux-x86-64_2of8.zip http://path.to.software.download/p17694377_121020_Linux-x86-64_2of8.zip:
   cmd.run
 
 #/tmp/p17694377_121020_Linux-x86-64_2of8.zip:
 #  file.managed:
-#    - source: http://fsfiles.evry.com/vagrant_boxes/sw/oracle_source/p17694377_121020_Linux-x86-64_2of8.zip
+#    - source: http://path.to.software.download/p17694377_121020_Linux-x86-64_2of8.zip
 #    - source_hash: md5=7f93edea2178e425ff46fc8e52369ea3
 
 mkdir -p {{ora_d}} && unzip /tmp/p17694377_121020_Linux-x86-64_1of8.zip -d {{ora_d}} && unzip /tmp/p17694377_121020_Linux-x86-64_2of8.zip -d {{ora_d}} && rm /tmp/p17694377_121020_Linux-x86-64_1of8.zip /tmp/p17694377_121020_Linux-x86-64_2of8.zip:
@@ -39,7 +39,7 @@ mkdir -p {{ora_d}} && unzip /tmp/p17694377_121020_Linux-x86-64_1of8.zip -d {{ora
 #  archive:
 #    - extracted
 #    - name: {{ora_d}}
-#    - source: http://fsfiles.evry.com/vagrant_boxes/sw/oracle_source/p17694377_121020_Linux-x86-64_1of8.zip
+#    - source: http://path.to.software.download/p17694377_121020_Linux-x86-64_1of8.zip
 #    - source_hash: md5=017d624abe5165406d3d7c7d2d3a834c
 #    - if_missing: {{ora_d}}/database/install/resource/cons_zh_TW.nls
 #    - archive_format: zip
@@ -50,7 +50,7 @@ mkdir -p {{ora_d}} && unzip /tmp/p17694377_121020_Linux-x86-64_1of8.zip -d {{ora
 #  archive:
 #    - extracted
 #    - name: {{ora_d}}
-#    - source: http://fsfiles.evry.com/vagrant_boxes/sw/oracle_source/p17694377_121020_Linux-x86-64_2of8.zip
+#    - source: http://path.to.software.download/p17694377_121020_Linux-x86-64_2of8.zip
 #    - source_hash: md5=7f93edea2178e425ff46fc8e52369ea3
 #    - if_missing: {{ora_d}}/database/stage/Components/oracle.rdbms/12.1.0.1.0/1/DataFiles/filegroup19.6.1.jar
 #    - archive_format: zip
