@@ -15,7 +15,7 @@ shutdownDB:
 
 /tmp/p6880880_121010_Linux-x86-64.zip:
   file.managed:
-    - source: http://fsfiles.evry.com/vagrant_boxes/sw/oracle_source/p6880880_121010_Linux-x86-64.zip
+    - source: http://path.to.software.download/p6880880_121010_Linux-x86-64.zip
     - source_hash: md5=fd388cef00f928d383d29b722d3cb912
     - user: oracle
 
@@ -28,7 +28,7 @@ unzip /tmp/p6880880_121010_Linux-x86-64.zip -d {{ora_prod}}/dbhome_1 && rm /tmp/
 #  archive:
 #    - extracted
 #    - name: {{ora_prod}}/dbhome_1
-#    - source: http://fsfiles.evry.com/vagrant_boxes/sw/oracle_source/p6880880_121010_Linux-x86-64.zip
+#    - source: http://path.to.software.download/p6880880_121010_Linux-x86-64.zip
 #    - source_hash: md5=fd388cef00f928d383d29b722d3cb912
 #    - archive_user: oracle
 #    - if_missing: {{ora_prod}}/dbhome_1/OPatch
@@ -39,7 +39,7 @@ chown -R oracle:oinstall {{ora_prod}}/dbhome_1/OPatch:
 
 /tmp/p21520444_121020_Linux-x86-64.zip:
   file.managed:
-    - source: http://fsfiles.evry.com/vagrant_boxes/sw/oracle_source/p21520444_121020_Linux-x86-64.zip
+    - source: http://path.to.software.download/p21520444_121020_Linux-x86-64.zip
     - source_hash: md5=0252b595cbb6634958c2db278ddf0b5f
     - user: oracle
 
@@ -58,7 +58,7 @@ unzip /tmp/p21520444_121020_Linux-x86-64.zip -d {{extractdir}}/patchset && rm /t
 #  archive:
 #    - extracted
 #    - name: {{extractdir}}/patchset
-#    - source: http://fsfiles.evry.com/vagrant_boxes/sw/oracle_source/p21520444_121020_Linux-x86-64.zip
+#    - source: http://path.to.software.download/p21520444_121020_Linux-x86-64.zip
 #    - source_hash: md5=0252b595cbb6634958c2db278ddf0b5f
 #    - if_missing: {{extractdir}}/patchset
 #    - archive_format: zip
