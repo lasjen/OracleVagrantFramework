@@ -4,7 +4,6 @@
 Vagrant.configure("2") do |config|
   # If several PWH virtal machines, separate by different APPENDIX
   $V_HOSTNAME_APPENIX="31"
-  $V_BOX_LINK="oel67_ora12c.box" 
   $V_ORA_VERSION="12"
   $V_ORA_VERSION_SUFF="C"
   $V_OS_VERSION="67"
