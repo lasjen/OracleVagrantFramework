@@ -10,7 +10,7 @@ You must first use the "vagrant-oracle12c-ee" to create a vagrant box named "OEL
 
 ## Oracle Vagrant Box
 
-Go to the [vagrant-oracle12c-ee] directory, and follow the description.
+Go to the [vagrant-oracle12c-ee](./vagrant-oracle12c-ee) directory, and follow the description.
 
 ## Use the vagrant framwork for running Oracle databases under VirtualBox
 
